@@ -36,7 +36,7 @@ describe('enhancers', () => {
   });
 
   describe('failed item enhancement', () => {
-    it('decrease durability by 5', () => {
+    it('decrease durability by 5, when enh < 15', () => {
       const decreasedDurability = defaultItem.durability - 5;
       expect(fail(defaultItem)).toHaveProperty(
         'durability',
@@ -44,7 +44,7 @@ describe('enhancers', () => {
       );
     });
 
-    it('decrease durability by 10', () => {
+    it('decrease durability by 10, when enh >= 15', () => {
       const decreasedDurability = maxEnhancedItem.durability - 10;
       expect(fail(maxEnhancedItem)).toHaveProperty(
         'durability',
@@ -52,12 +52,29 @@ describe('enhancers', () => {
       );
     });
 
-    it('decrease enhancement by 1', () => {
+    it('decrease enhancement by 1, when enh > 16', () => {
       const decreasedEnhancement = maxEnhancedItem.enhancement - 1;
       expect(fail(maxEnhancedItem)).toHaveProperty(
         'enhancement',
         decreasedEnhancement
       );
+    });
+  });
+
+  describe('modify the item name with get()', () => {
+    const terribleSword = {
+      name: 'Terrible Sword',
+      durability: 50,
+      enhancement: 0,
+    };
+
+    it('do not change name if enhancement = 0', () => {
+      expect(get(terribleSword)).toHaveProperty('name', terribleSword.name);
+    });
+
+    it('changes name for enhanced item', () => {
+      const enhancedName = '[+18] Mega Sword';
+      expect(get(maxEnhancedItem)).toHaveProperty('name', enhancedName);
     });
   });
 });

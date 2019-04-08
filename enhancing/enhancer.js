@@ -36,5 +36,10 @@ function repair(item) {
 }
 
 function get(item) {
+  const { enhancement } = item;
+
+  if (enhancement > 0) {
+    item.name = `[+${item.enhancement}] ${item.name}`;
+  }
   return { ...item };
 }
