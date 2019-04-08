@@ -1,5 +1,4 @@
 const enhancer = require('./enhancer.js');
-// test away!
 const { succeed, fail, repair, get } = enhancer;
 
 const defaultItem = {
@@ -15,6 +14,56 @@ const maxEnhancedItem = {
 };
 
 describe('enhancers', () => {
+  describe('throw error if item is missing name/durability/enhancement or has wrong data type', () => {
+    const missingDurability = {
+      name: 'Lazy Sword',
+      enhancement: 0,
+    };
+
+    const missingName = {
+      enhancement: 0,
+    };
+
+    const missingEnhancement = {
+      name: 'Lazy Sword',
+    };
+
+    it('repair throw', () => {
+      expect(() => repair(missingDurability)).toThrow();
+      expect(() => repair(missingName)).toThrow();
+      expect(() => repair(missingEnhancement)).toThrow();
+    });
+    it('succeed throw', () => {
+      expect(() => succeed(missingDurability)).toThrow();
+    });
+    it('fail throw', () => {
+      expect(() => fail(missingDurability)).toThrow();
+    });
+    it('get throw', () => {
+      expect(() => get(missingDurability)).toThrow();
+    });
+  });
+
+  describe('throw error if item name is shorter than 3 chars', () => {
+    const shortName = {
+      name: 'A',
+      durability: 50,
+      enhancement: 20,
+    };
+    it('repair throw', () => {
+      expect(() => repair(shortName)).toThrow();
+    });
+    it('succeed throw', () => {
+      expect(() => succeed(shortName)).toThrow();
+    });
+    it('fail throw', () => {
+      expect(() => fail(shortName)).toThrow();
+    });
+    it('get throw', () => {
+      expect(() => get(shortName)).toThrow();
+    });
+  });
+
   describe('repair item', () => {
     it('returns new item with 100 durability', () => {
       expect(repair(defaultItem)).toHaveProperty('durability', 100);
@@ -73,7 +122,9 @@ describe('enhancers', () => {
     });
 
     it('changes name for enhanced item', () => {
-      const enhancedName = '[+18] Mega Sword';
+      const enhancedName = `[+${maxEnhancedItem.enhancement}] ${
+        maxEnhancedItem.name
+      }`;
       expect(get(maxEnhancedItem)).toHaveProperty('name', enhancedName);
     });
   });
